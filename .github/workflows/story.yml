@@ -32,4 +32,4 @@ jobs:
           poetry install
       # Runs a single command using the runners shell
       - name: Run the story generator
-        run: python app.py
+        run: poetry run app.py
