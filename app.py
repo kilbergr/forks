@@ -3,30 +3,35 @@ from pathlib import Path
 
 from github import Github
 from github.Repository import Repository
+from jinja2 import FileSystemLoader, Environment
 
 g = Github(os.environ["GITHUB_TOKEN"])
-repo = os.environ.get("GITHUB_REPOSITORY", "lizadaly/forks")
+repo_name = os.environ.get("GITHUB_REPOSITORY", "lizadaly/forks")
 
-out = Path('index.html').open('w')
+
+
+
+
 
 def get_all_forks(repo: Repository, forks: list[Repository]) -> list[Repository]:
-    if repo.parent is None:
-        print(f"<p>{repo.owner.name or repo.owner.login} started the journey on {repo.created_at}.</p>", file=out)
 
     for fork in repo.get_forks():
-        print(f"""
-        <p>
-        {fork.owner.name or fork.owner.login} joined the party on {fork.created_at}.
-        </p>""", file=out)
         forks.append(fork)
         get_all_forks(fork, forks)
     return forks
 
 def main():
+    repo = g.get_repo(repo_name)
+    root = repo if repo.parent is None else repo.parent  # FIXME find real parent
+    forks = get_all_forks(repo, [])
 
-    forks = get_all_forks(g.get_repo(repo), [])
-
-
+    loader = FileSystemLoader(".")
+    env = Environment(loader=loader)
+    template = env.get_template("index.jinja")
+    Path('index.html').write_text(template.render({
+        "root": root,
+        "forks": forks
+    }))
 
 
 
