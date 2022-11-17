@@ -29,12 +29,14 @@
         {% if not repo.source %}
             <p>
                 You started this journey {{ repo.created_at | humanize_naturaldelta }} ago.
+                It was a {{ repo.owner.forks_data.weather }} day.
             </p>
         {# Direct child of the root #}
         {% elif repo.source == repo.parent %}
             <p>
             You heard that {{ name(parent) }} began this journey  {{ parent.created_at | humanize_naturaldelta }} ago.
-            and you decided to join them {{ repo.created_at | humanize_naturaldate }}.
+            and you decided to join them {{ repo.created_at | humanize_naturaldate }} on
+            a {{ repo.owner.forks_data.weather }} day.
             </p>
         {# Descendent of the root but not a direct child #}
         {% else %}
@@ -45,7 +47,9 @@
         {% endif %}
 
         {% for fork in forks %}
-        <p>{{ name(fork) }} joined the party {{ fork.created_at | humanize_naturaldate }}.</p>
+        <p>{{ name(fork) }} joined the party {{ fork.created_at | humanize_naturaldate }}
+
+        on a {{ fork.owner.forks_data.weather }} day.</p>
         {% endfor %}
     </main>
 </body>

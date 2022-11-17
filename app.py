@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import random
 
 from github import Github
 from github.Repository import Repository
@@ -8,10 +9,20 @@ from jinja2 import FileSystemLoader, Environment
 g = Github(os.environ["GITHUB_TOKEN"])
 repo_name = os.environ.get("GITHUB_REPOSITORY", "lizadaly/forks")
 
+weather = ['rainy', 'sunny', 'cloudless', 'snowy', 'peaceful', 'ominous']
+
+
+def generate_random_modifiers(username: str) -> dict[str, str]:
+    random.seed(hash(username))
+    return {
+        "weather": random.choice(weather)
+    }
 
 def get_all_forks(repo: Repository, forks: list[Repository]) -> list[Repository]:
 
     for fork in repo.get_forks():
+
+        fork.owner.forks_data = generate_random_modifiers(fork.owner.login)
         forks.append(fork)
         get_all_forks(fork, forks)
     return forks
@@ -19,7 +30,10 @@ def get_all_forks(repo: Repository, forks: list[Repository]) -> list[Repository]
 
 def main():
     repo = g.get_repo(repo_name)
+    repo.owner.forks_data = generate_random_modifiers(repo.owner.login)
+
     parent = repo.parent or repo
+    parent.owner.forks_data = generate_random_modifiers(parent.owner.login)
     forks = get_all_forks(repo, [])
 
     loader = FileSystemLoader(".")
