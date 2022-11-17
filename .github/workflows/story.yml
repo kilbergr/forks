@@ -23,12 +23,9 @@ jobs:
 
   # Render the story and upload it as an artifact
   tell:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
