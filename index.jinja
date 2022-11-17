@@ -1,5 +1,5 @@
 {% macro name(repo) %}
-    {{ repo.owner.name or repo.owner.login }}
+    {{ repo.owner.login }}
 {% endmacro %}
 
 <!DOCTYPE html>
@@ -28,23 +28,24 @@
         {# Is this the root repo? #}
         {% if not repo.source %}
             <p>
-                You started this journey on {{ repo.created_at }}.
+                You started this journey {{ repo.created_at | humanize_naturaldelta }} ago.
             </p>
         {# Direct child of the root #}
         {% elif repo.source == repo.parent %}
             <p>
-            You heard that {{ name(parent) }} began this journey on {{ parent.created_at }}.
+            You heard that {{ name(parent) }} began this journey  {{ parent.created_at | humanize_naturaldelta }} ago.
+            and you decided to join them {{ repo.created_at | humanize_naturaldate }}.
             </p>
         {# Descendent of the root but not a direct child #}
         {% else %}
            <p>
-            Before you, {{ name(parent) }} began this journey on {{ parent.created_at }}, but
+            Before you, {{ name(parent) }} began this journey {{ parent.created_at | humanize_naturaldelta }} ago, but
             they were not the first.
             </p>
         {% endif %}
 
         {% for fork in forks %}
-        <p>{{ name(fork) }} joined the party on {{ fork.created_at }}.</p>
+        <p>{{ name(fork) }} joined the party {{ fork.created_at | humanize_naturaldate }}.</p>
         {% endfor %}
     </main>
 </body>
