@@ -12,7 +12,15 @@ The story is automatically published on the Github Pages site for any repository
 
 All that is required is to fork this repository and you will be added to the story upstream.
 
-You can view the story from your POV by enabling Github Pages in your fork. A fork can see limited activity "above it", and any activity "below it"—any forks of your fork.
+You can view the story from your POV by enabling Github Pages in your fork:
+
+* Go to Settings in your fork
+* Select "Pages" from the left nav.
+* Under "Build and deployment", select "Github Actions."
+
+The story will automatically be built at `http://<your-username>.github.io/forks/`.
+
+A fork can see limited activity "above it", and any activity "below it"—any forks of your fork.
 
 Other people can join the journey "later", by forking forks rather than the original repository. **If a fork's code has deviated from the original repository, make sure you're comfortable with its changes.**
 
