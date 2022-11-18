@@ -25,11 +25,16 @@
             <h2>A collaborative, distributed story.</h2>
         </header>
 
+        <h3>Preface</h3>
         {# Is this the root repo? #}
-        {% if not repo.source %}
+        {% if repo == source %}
             <p>
-                You started this journey {{ repo.created_at | humanize_naturaldelta }} ago.
+                You started this journey over {{ repo.created_at | humanize_naturaldelta }} ago.
                 It was a {{ repo.owner.forks_data.weather }} day.
+            </p>
+            <p>
+                To help others follow you, you left behind a winding path of {{ repo.owner.forks_data.stones }}
+                cobblestones.
             </p>
         {# Direct child of the root #}
         {% elif repo.source == repo.parent %}
@@ -38,11 +43,20 @@
             and you decided to join them {{ repo.created_at | humanize_naturaldate }} on
             a {{ repo.owner.forks_data.weather }} day.
             </p>
+
+            <p>
+            They had laid a sturdy path of {{ source.owner.forks_data.stones }}
+                cobblestones until their pockets were empty. You don't carry stones,
+                but instead planted behind you a trail of {{ repo.owner.forks_data.flowers }} flowers.
+            <p>
         {# Descendent of the root but not a direct child #}
         {% else %}
            <p>
             Before you, {{ name(parent) }} began this journey {{ parent.created_at | humanize_naturaldelta }} ago, but
             they were not the first.
+            </p>
+            <p> They told you they'd followed a sturdy path of {{ source.owner.forks_data.stones }}
+            cobblestones, but the stones were finite, and they lay instead a trail of {{ parent.owner.forks_data.flowers }} flowers.
             </p>
         {% endif %}
 
@@ -52,6 +66,13 @@
         on a {{ fork.owner.forks_data.weather }} day.</p>
         {% endfor %}
     </main>
+    <!-- debugging info
+
+    repo: {{ repo }}
+    repo.created_at: {{ repo.created_at }}
+    source: {{ source }}
+    source.created_at: {{ source.created_at }}
+    -->
 </body>
 
 </html>
