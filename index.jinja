@@ -14,7 +14,7 @@
         }
 
         main {
-            margin: 5vw 30vw;
+            margin: 5vw 20vw;
             line-height: 1.4rem;
         }
     </style>
@@ -70,7 +70,7 @@
                 <p>
                 {% if level == 1 %}
 
-                    {{ name(fork) }} observed {% if parent == repo %} you {% else %} {{ name(parent) }} {% endif %}
+                    {{ name(fork) }} observed {% if fork.parent == repo %} you {% else %} {{ name(parent) }} {% endif %}
                     passing through the {{ fork.owner.forks_data.home }} where they lived and chose to follow. They travelled along
                     the {{ source.owner.forks_data.stones }}
                     cobblestone path until the stones ran out. They planted instead a trail of
