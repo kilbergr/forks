@@ -18,7 +18,7 @@ modifying some settings in your fork of this repository.
 * Go to Settings in your fork
 * Select "Pages" from the left nav.
 * Under "Build and deployment", select "Github Actions."
-* Now go to the Actions tab in your fork, and enable Actions.
+* Now go to the Actions tab in your fork, and enable Workflows.
 
 The story will automatically be built at `https://<your-username>.github.io/forks/`.
 
