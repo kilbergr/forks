@@ -8,6 +8,8 @@ from github.Repository import Repository
 from jinja2 import FileSystemLoader, Environment
 
 g = Github(os.environ["GITHUB_TOKEN"])
+DEFAULT_REPO_NAME = os.environ.get("GITHUB_REPOSITORY", "lizadaly/forks")
+
 
 def generate_random_modifiers(username: str) -> dict[str, str]:
     random.seed(username)
@@ -31,11 +33,12 @@ def generate_random_modifiers(username: str) -> dict[str, str]:
         "home": random.choice(
             json.load(Path("data/natural-places.json").open())["natural places"]
         ),
-
     }
 
 
-def get_all_forks(repo: Repository, forks: list[Repository], level=1) -> list[Repository]:
+def get_all_forks(
+    repo: Repository, forks: list[Repository], level=1
+) -> list[Repository]:
 
     for fork in repo.get_forks():
 
@@ -66,7 +69,7 @@ def main(repo_name=str):
     groups: dict[int, Repository] = {}
 
     for level in levels:
-        groups[level] = [fork for fork in forks if fork.level==level]
+        groups[level] = [fork for fork in forks if fork.level == level]
 
     loader = FileSystemLoader(".")
     env = Environment(
@@ -74,13 +77,26 @@ def main(repo_name=str):
     )
     template = env.get_template("index.jinja")
     Path("index.html").write_text(
-        template.render({"repo": repo, "source": source, "parent": parent, "forks": forks, 'groups': groups})
+        template.render(
+            {
+                "repo": repo,
+                "source": source,
+                "parent": parent,
+                "forks": forks,
+                "groups": groups,
+            }
+        )
     )
 
 
 if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('--repo', default="lizadaly/forks",  help="An optional repo to use instead of the root repository")
+    parser.add_argument(
+        "--repo",
+        default=DEFAULT_REPO_NAME,
+        help="An optional repo to use instead of the root repository",
+    )
     args = parser.parse_args()
     main(repo_name=args.repo)
