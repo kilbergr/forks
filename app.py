@@ -42,9 +42,9 @@ def get_all_forks(
 
     for fork in repo.get_forks():
 
-        fork.owner.forks_data = generate_random_modifiers(fork.owner.login)
+        fork.forks_data = generate_random_modifiers(fork.owner.login)
         fork.level = level
-        fork.owner.forks_data["parent_data"] = repo.owner.forks_data
+        fork.forks_data["parent_data"] = repo.forks_data
         forks.append(fork)
 
         get_all_forks(fork, forks, level + 1)
@@ -53,14 +53,15 @@ def get_all_forks(
 
 def main(repo_name=str):
     repo = g.get_repo(repo_name)
-    repo.owner.forks_data = generate_random_modifiers(repo.owner.login)
+
+    repo.forks_data = generate_random_modifiers(repo.owner.login)
 
     source = repo.source or repo
-    source.owner.forks_data = generate_random_modifiers(source.owner.login)
+    source.forks_data = generate_random_modifiers(source.owner.login)
     source.level = 0
 
     parent = repo.parent or repo
-    parent.owner.forks_data = generate_random_modifiers(parent.owner.login)
+    parent.forks_data = generate_random_modifiers(parent.owner.login)
 
     # Get all descendent forks from this repo
     forks = get_all_forks(repo, [], level=1)
