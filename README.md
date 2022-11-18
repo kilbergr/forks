@@ -20,7 +20,7 @@ modifying some settings in your fork of this repository.
 * Under "Build and deployment", select "Github Actions."
 * Now go to the Actions tab in your fork, and enable Actions.
 
-The story will automatically be built at `http://<your-username>.github.io/forks/`.
+The story will automatically be built at `https://<your-username>.github.io/forks/`.
 
 A fork can see limited activity "above it", and any activity "below it"—any forks of your fork.
 
