@@ -28,16 +28,23 @@ def generate_random_modifiers(username: str) -> dict[str, str]:
         "metals": random.choice(
             json.load(Path("data/layperson-metals.json").open())["layperson metals"]
         ),
+        "home": random.choice(
+            json.load(Path("data/natural-places.json").open())["natural places"]
+        ),
+
     }
 
 
-def get_all_forks(repo: Repository, forks: list[Repository]) -> list[Repository]:
+def get_all_forks(repo: Repository, forks: list[Repository], level=1) -> list[Repository]:
 
     for fork in repo.get_forks():
 
         fork.owner.forks_data = generate_random_modifiers(fork.owner.login)
+        fork.level = level
+        fork.owner.forks_data["parent_data"] = repo.owner.forks_data
         forks.append(fork)
-        get_all_forks(fork, forks)
+
+        get_all_forks(fork, forks, level + 1)
     return forks
 
 
@@ -47,12 +54,19 @@ def main(repo_name=str):
 
     source = repo.source or repo
     source.owner.forks_data = generate_random_modifiers(source.owner.login)
+    source.level = 0
 
     parent = repo.parent or repo
     parent.owner.forks_data = generate_random_modifiers(parent.owner.login)
 
     # Get all descendent forks from this repo
-    forks = get_all_forks(repo, [])
+    forks = get_all_forks(repo, [], level=1)
+
+    levels = sorted(list(set([fork.level for fork in forks])))
+    groups: dict[int, Repository] = {}
+
+    for level in levels:
+        groups[level] = [fork for fork in forks if fork.level==level]
 
     loader = FileSystemLoader(".")
     env = Environment(
@@ -60,7 +74,7 @@ def main(repo_name=str):
     )
     template = env.get_template("index.jinja")
     Path("index.html").write_text(
-        template.render({"repo": repo, "source": source, "parent": parent, "forks": forks})
+        template.render({"repo": repo, "source": source, "parent": parent, "forks": forks, 'groups': groups})
     )
 
 

@@ -12,11 +12,13 @@ The story is automatically published on the Github Pages site for any repository
 
 All that is required is to fork this repository and you will be added to the story upstream.
 
-You can view the story from your POV by enabling Github Pages in your fork:
+You are encouraged to also generate a version of the story from your point of view. Doing so only requires
+modifying some settings in your fork of this repository.
 
 * Go to Settings in your fork
 * Select "Pages" from the left nav.
 * Under "Build and deployment", select "Github Actions."
+* Now go to the Actions tab in your fork, and enable Actions.
 
 The story will automatically be built at `http://<your-username>.github.io/forks/`.
 

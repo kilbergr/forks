@@ -10,10 +10,12 @@
     <style>
         body {
             font-family: baskerville, georgia, serif;
+            font-size: 18px;
         }
 
         main {
-            margin: 10vw 30vw;
+            margin: 5vw 30vw;
+            line-height: 1.4rem;
         }
     </style>
 </head>
@@ -30,17 +32,18 @@
         {% if repo == source %}
             <p>
                 You started this journey over {{ repo.created_at | humanize_naturaldelta }} ago.
-                It was a {{ repo.owner.forks_data.weather }} day.
+                You left from your home in the {{ repo.owner.forks_data.home}}. It was a {{ repo.owner.forks_data.weather }} day.
             </p>
             <p>
-                To help others follow you, you left behind a winding path of {{ repo.owner.forks_data.stones }}
+                To help others follow you, you lay behind a winding path of {{ repo.owner.forks_data.stones }}
                 cobblestones.
             </p>
         {# Direct child of the root #}
         {% elif repo.source == repo.parent %}
             <p>
-            You heard that {{ name(parent) }} began this journey  {{ parent.created_at | humanize_naturaldelta }} ago.
-            and you decided to join them {{ repo.created_at | humanize_naturaldate }} on
+            You watched {{ name(parent) }} passing through the {{ repo.owner.forks_data.home }} where you live.
+            They said they began this journey  {{ parent.created_at | humanize_naturaldelta }} ago.
+            You decided to join them {{ repo.created_at | humanize_naturaldate }} on
             a {{ repo.owner.forks_data.weather }} day.
             </p>
 
@@ -52,18 +55,43 @@
         {# Descendent of the root but not a direct child #}
         {% else %}
            <p>
-            Before you, {{ name(parent) }} began this journey {{ parent.created_at | humanize_naturaldelta }} ago, but
-            they were not the first.
+            One day {{ name(parent) }}  {{ parent.created_at | humanize_naturaldelta }} ago passed through your {{ repo.owner.forks_data.home }}.
+            They were not the first on the journey.
             </p>
             <p> They told you they'd followed a sturdy path of {{ source.owner.forks_data.stones }}
             cobblestones, but the stones were finite, and they lay instead a trail of {{ parent.owner.forks_data.flowers }} flowers.
             </p>
         {% endif %}
 
-        {% for fork in forks %}
-        <p>{{ name(fork) }} joined the party {{ fork.created_at | humanize_naturaldate }}
+        {% for level in groups %}
+            <h3>Chapter {{ level }}</h3>
 
-        on a {{ fork.owner.forks_data.weather }} day.</p>
+            {% for fork in groups[level] %}
+                <p>
+                {% if level == 1 %}
+
+                    {{ name(fork) }} observed {% if parent == repo %} you {% else %} {{ name(parent) }} {% endif %}
+                    passing through the {{ fork.owner.forks_data.home }} where they lived and chose to follow. They travelled along
+                    the {{ source.owner.forks_data.stones }}
+                    cobblestone path until the stones ran out. They planted instead a trail of
+                    {{ fork.owner.forks_data.flowers }} flowers for others to follow them.
+
+                {% else %}
+
+                    {{ name(fork) }} left their {{ fork.owner.forks_data.home }} and followed
+                    the path of {{ fork.owner.forks_data.parent_data.flowers }}
+                    flowers until the flowers ran thin. They planted instead a trail of
+                    {{ fork.owner.forks_data.flowers }} flowers for others to follow them.
+
+                {% endif %}
+
+                They set out on a {{ fork.owner.forks_data.weather }} day.
+            </p>
+            <!--
+                fork: {{ fork }}
+                level: {{ fork.level }}
+            -->
+            {% endfor %}
         {% endfor %}
     </main>
     <!-- debugging info
